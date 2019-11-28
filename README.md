@@ -1,2 +1,2 @@
 ### FT Food Truck Menu
-Service to handle Food Truck Menus
+Service to handle food truck menus
