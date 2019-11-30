@@ -7,7 +7,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.Bean;
 
 @SpringBootApplication
-@EnableFeignClients(basePackages = {"com.foodtruck.client"})
+@EnableFeignClients(basePackages = {"com.foodtraffic.client"})
 public class Application {
 	public static void main(String[] args) {
 		SpringApplication.run(Application.class, args);

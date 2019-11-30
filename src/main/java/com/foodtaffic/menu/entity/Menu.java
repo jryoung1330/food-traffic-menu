@@ -4,12 +4,10 @@ import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Min;
@@ -33,10 +31,8 @@ public class Menu {
 	@Column(name = "DESCRIPTION")
 	private String description;
 
-	@OneToMany(fetch=FetchType.EAGER)
-	@JoinTable(name="MENU_ITEM",
-			joinColumns=@JoinColumn(name="MENUID"),
-            inverseJoinColumns=@JoinColumn(name="MENUID"))
+	@OneToMany
+	@JoinColumn(name = "MENUID", updatable=false)
 	private Set<MenuItem> menuItems;
 
 }

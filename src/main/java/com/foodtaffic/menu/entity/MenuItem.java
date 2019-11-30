@@ -43,17 +43,17 @@ public class MenuItem {
 	private String remarks;
 	
 	@Column(name = "IS_VEGAN")
-	private boolean isVegan;
+	private Boolean isVegan;
 	
 	@Column(name = "IS_VEGETARIAN")
-	private boolean isVegetarian;
+	private Boolean isVegetarian;
 	
 	@Column(name = "IS_GLUTEN_FREE")
-	private boolean isGlutenFree;
+	private Boolean isGlutenFree;
 	
 	@Column(name = "IS_DAIRY_FREE")
-	private boolean isDairyFree;
+	private Boolean isDairyFree;
 	
 	@Column(name = "CONTAINS_NUTS")
-	private boolean containsNuts;
+	private Boolean containsNuts;
 }
