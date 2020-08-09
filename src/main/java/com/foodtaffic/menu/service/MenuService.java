@@ -17,4 +17,8 @@ public interface MenuService {
 
 	MenuItemDto updateMenuItem(Long foodTruckId, Long menuId, Long menuItemId, MenuItem menuItem, String accessToken);
 
+	void deleteMenu(Long foodTruckId, Long menuId, String accessToken);
+
+	void deleteMenuItem(Long foodTruckId, Long menuId, Long menuItemId, String accessToken);
+
 }

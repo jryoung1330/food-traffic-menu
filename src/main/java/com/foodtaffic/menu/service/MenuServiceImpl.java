@@ -102,11 +102,8 @@ public class MenuServiceImpl implements MenuService {
 		HttpStatus status;
 		String message;
 		
-		if (!foodTruckClient.checkFoodTruck(null, foodTruckId)) {
-			message = "Food Truck does not exist";
-			status = HttpStatus.NOT_FOUND;
-		} else if (!menuRepo.existsById(menuId)) {
-			message = "Menu does not exist";
+		if (!menuRepo.existsByIdAndFoodTruckId(menuId, foodTruckId)) {
+			message = "Resource does not exist";
 			status = HttpStatus.NOT_FOUND;
 		} else if (!isUserAnOwnerOrAdmin(foodTruckId, accessToken)) {
 			message = "Must be an owner or admin to perform this operation";
@@ -127,14 +124,8 @@ public class MenuServiceImpl implements MenuService {
 		HttpStatus status;
 		String message;
 		
-		if (!foodTruckClient.checkFoodTruck(null, foodTruckId)) {
-			message = "Food Truck does not exist";
-			status = HttpStatus.NOT_FOUND;
-		} else if (!menuRepo.existsById(menuId)) {
-			message = "Menu does not exist";
-			status = HttpStatus.NOT_FOUND;
-		} else if (!menuItemRepo.existsById(menuItemId)) {
-			message = "Menu does not exist";
+		if (!menuRepo.existsByIdAndFoodTruckId(menuId, foodTruckId) || !menuItemRepo.existsByIdAndMenuId(menuItemId, menuId)) {
+			message = "Resource does not exist";
 			status = HttpStatus.NOT_FOUND;
 		} else if (!isUserAnOwnerOrAdmin(foodTruckId, accessToken)) {
 			message = "Must be an owner or admin to perform this operation";
@@ -150,6 +141,43 @@ public class MenuServiceImpl implements MenuService {
 		throw new ResponseStatusException(status, message);
 	}
 	
+	@Override
+	public void deleteMenu(Long foodTruckId, Long menuId, String accessToken) {
+		HttpStatus status;
+		String message;
+		
+		if (!menuRepo.existsByIdAndFoodTruckId(menuId, foodTruckId)) {
+			message = "Resource does not exist";
+			status = HttpStatus.NOT_FOUND;
+		} else if (!isUserAnOwnerOrAdmin(foodTruckId, accessToken)) {
+			message = "Must be an owner or admin to perform this operation";
+			status = HttpStatus.FORBIDDEN;
+		} else {
+			menuRepo.deleteById(menuId);
+			return;
+		}
+		
+		throw new ResponseStatusException(status, message);
+	}
+	
+	@Override
+	public void deleteMenuItem(Long foodTruckId, Long menuId, Long menuItemId, String accessToken) {
+		HttpStatus status;
+		String message;
+		
+		if (!menuRepo.existsByIdAndFoodTruckId(menuId, foodTruckId) || !menuItemRepo.existsByIdAndMenuId(menuItemId, menuId)) {
+			message = "Resource does not exist";
+			status = HttpStatus.NOT_FOUND;
+		} else if (!isUserAnOwnerOrAdmin(foodTruckId, accessToken)) {
+			message = "Must be an owner or admin to perform this operation";
+			status = HttpStatus.FORBIDDEN;
+		} else {
+			menuItemRepo.deleteById(menuItemId);
+			return;
+		}
+		throw new ResponseStatusException(status, message);
+	}
+	
 	private boolean isUserAnOwnerOrAdmin(Long foodTruckId, String accessToken) {
 		List<EmployeeDto> employees = employeeClient.getEmployeesByFoodTruck(foodTruckId, "admin");
 		UserDto user = userClient.checkAccessHeader(accessToken);
@@ -160,8 +188,6 @@ public class MenuServiceImpl implements MenuService {
 
 		return false;
 	}
-
-
 	
 	private MenuItem mergeMenuItem(MenuItem updatedItem, Long menuItemId) {
 		MenuItem mergedItem = menuItemRepo.getById(menuItemId);
@@ -179,5 +205,5 @@ public class MenuServiceImpl implements MenuService {
 		
 		return mergedItem;
 	}
-	
+
 }

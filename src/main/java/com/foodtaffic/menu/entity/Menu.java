@@ -2,6 +2,7 @@ package com.foodtaffic.menu.entity;
 
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -31,7 +32,7 @@ public class Menu {
 	@Column(name = "DESCRIPTION")
 	private String description;
 
-	@OneToMany
+	@OneToMany(cascade = CascadeType.REMOVE)
 	@JoinColumn(name = "MENUID", updatable=false)
 	private Set<MenuItem> menuItems;
 

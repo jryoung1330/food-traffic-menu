@@ -8,6 +8,8 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.Min;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import lombok.Data;
 
 @Entity
@@ -43,15 +45,19 @@ public class MenuItem {
 	private String remarks;
 	
 	@Column(name = "IS_VEGAN")
+	@JsonProperty(value = "vegan")
 	private Boolean isVegan;
 	
 	@Column(name = "IS_VEGETARIAN")
+	@JsonProperty(value = "vegetarian")
 	private Boolean isVegetarian;
 	
 	@Column(name = "IS_GLUTEN_FREE")
+	@JsonProperty(value = "glutenFree")
 	private Boolean isGlutenFree;
 	
 	@Column(name = "IS_DAIRY_FREE")
+	@JsonProperty(value = "dairyFree")
 	private Boolean isDairyFree;
 	
 	@Column(name = "CONTAINS_NUTS")

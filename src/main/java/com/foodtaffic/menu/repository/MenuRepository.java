@@ -9,4 +9,5 @@ import com.foodtaffic.menu.entity.Menu;
 public interface MenuRepository extends JpaRepository<Menu, Long>{
 
 	Optional<Menu> findByFoodTruckId(Long foodTruckId);
+	boolean existsByIdAndFoodTruckId(Long id, Long foodTruckId);
 }

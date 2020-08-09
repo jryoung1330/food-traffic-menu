@@ -9,5 +9,6 @@ import com.foodtaffic.menu.entity.MenuItem;
 public interface MenuItemRepository extends JpaRepository<MenuItem, Long>{
 
 	MenuItem getById(Long menuItemId);
+	boolean existsByIdAndMenuId(Long id, Long menuId);
 
 }

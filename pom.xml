@@ -107,12 +107,18 @@
         </dependency>
 
         <!-- junit 5 -->
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-engine</artifactId>
-            <version>${junit-jupiter.version}</version>
-            <scope>test</scope>
-        </dependency>
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter</artifactId>
+			<version>5.6.0-M1</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.junit.platform</groupId>
+			<artifactId>junit-platform-commons</artifactId>
+			<version>1.6.0-M1</version>
+		</dependency>
 
         <!-- lombok -->
         <dependency>
@@ -132,9 +138,9 @@
         <dependency>
             <groupId>com.foodtraffic</groupId>
             <artifactId>ft-lib</artifactId>
-            <version>1.2</version>
+            <version>1.0</version>
             <scope>system</scope>
-            <systemPath>${project.basedir}/src/main/resources/ft-lib-1.2.jar</systemPath>
+            <systemPath>${project.basedir}/src/main/resources/ft-lib-1.0.jar</systemPath>
         </dependency>
     </dependencies>
 </project>

@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -61,7 +62,7 @@ public class MenuController {
 	}
 	
 	@PutMapping("/{menuId}/menu-items/{menuItemId}")
-	public MenuItemDto createMenu(@PathVariable(name = "foodTruckId") Long foodTruckId,
+	public MenuItemDto updateMenuItem(@PathVariable(name = "foodTruckId") Long foodTruckId,
 							  @PathVariable(name = "menuId") Long menuId,
 							  @PathVariable(name = "menuItemId") Long menuItemId,
 							  @RequestBody MenuItem menuItem,
@@ -69,5 +70,21 @@ public class MenuController {
 		return menuService.updateMenuItem(foodTruckId, menuId, menuItemId, menuItem, accessToken);
 	}
 	
+	@DeleteMapping("/{menuId}")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void deleteMenu(@PathVariable(name = "foodTruckId") Long foodTruckId,
+							  @PathVariable(name = "menuId") Long menuId,
+							  @CookieValue(name = "_gid", defaultValue = "_gid") String accessToken) {
+		menuService.deleteMenu(foodTruckId, menuId, accessToken);
+	}
+	
+	@DeleteMapping("/{menuId}/menu-items/{menuItemId}")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void deleteMenuItem(@PathVariable(name = "foodTruckId") Long foodTruckId,
+							   @PathVariable(name = "menuId") Long menuId,
+							   @PathVariable(name = "menuItemId") Long menuItemId,
+							   @CookieValue(name = "_gid", defaultValue = "_gid") String accessToken) {
+		menuService.deleteMenuItem(foodTruckId, menuId, menuItemId, accessToken);
+	}
 	
 }
