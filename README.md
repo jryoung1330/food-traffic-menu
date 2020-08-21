@@ -1,2 +1,2 @@
-### FT Food Truck Menu
-Service to handle food truck menus
+### FT Vendor Menu
+Service to handle vendor menus
