@@ -1,26 +1,18 @@
-package com.foodtaffic.menu.entity;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.validation.constraints.Min;
+package com.foodtraffic.menu.entity;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 import lombok.Data;
 
+import javax.persistence.*;
+
 @Entity
-@Table(name = "MENU_ITEM")
 @Data
+@Table(name = "MENU_ITEM")
 public class MenuItem {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "MENUITEMID")
-	@Min(0)
 	private Long id;
 	
 	@Column(name = "MENUID")
@@ -37,9 +29,6 @@ public class MenuItem {
 	
 	@Column(name = "CALORIES")
 	private Integer calories;
-	
-	@Column(name = "INGREDIENTS")
-	private String ingredients;
 	
 	@Column(name = "REMARKS")
 	private String remarks;

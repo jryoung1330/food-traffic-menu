@@ -1,4 +1,4 @@
-package com.foodtaffic.menu;
+package com.foodtraffic.menu;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.boot.SpringApplication;
