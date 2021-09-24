@@ -33,15 +33,13 @@ public class MenuController {
 	@Autowired
 	private MenuService menuService;
 
+	/*
+	 * menu endpoints
+	 */
+
 	@GetMapping
 	public List<MenuDto> getMenusForVendor(@PathVariable(name = "vendorId") Long vendorId) {
 		return menuService.getAllMenusByVendor(vendorId);
-	}
-
-	@GetMapping("/menu-items/top-sellers")
-	public List<MenuItemDto> getTopSellers(@PathVariable(name = "vendorId") Long vendorId,
-										   @CookieValue(name = "_gid", defaultValue = "_gid") String accessToken) {
-		return menuService.getTopSellingItems(vendorId, accessToken);
 	}
 
 	@PostMapping
@@ -52,6 +50,26 @@ public class MenuController {
 		return menuService.createMenu(vendorId, menu, accessToken);
 	}
 
+	@PutMapping("/{menuId}")
+	public MenuDto updateMenu(@PathVariable(name = "vendorId") Long vendorId,
+							  @PathVariable(name = "menuId") Long menuId,
+							  @RequestBody Menu menu,
+							  @CookieValue(name = "_gid", defaultValue = "_gid") String accessToken) {
+		return menuService.updateMenu(vendorId, menuId, menu, accessToken);
+	}
+
+	@DeleteMapping("/{menuId}")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void deleteMenu(@PathVariable(name = "vendorId") Long vendorId,
+						   @PathVariable(name = "menuId") Long menuId,
+						   @CookieValue(name = "_gid", defaultValue = "_gid") String accessToken) {
+		menuService.deleteMenu(vendorId, menuId, accessToken);
+	}
+
+	/*
+	 * menu item endpoints
+	 */
+	
 	@PostMapping("/{menuId}/menu-items")
 	@ResponseStatus(code = HttpStatus.CREATED)
 	public MenuItemDto createMenuItem(@PathVariable(name = "vendorId") Long vendorId,
@@ -59,14 +77,6 @@ public class MenuController {
 									  @RequestBody MenuItem menuItem,
 									  @CookieValue(name = "_gid", defaultValue = "_gid") String accessToken) {
 		return menuService.createMenuItem(vendorId, menuId, menuItem, accessToken);
-	}
-
-	@PutMapping("/{menuId}")
-	public MenuDto createMenu(@PathVariable(name = "vendorId") Long vendorId,
-							  @PathVariable(name = "menuId") Long menuId,
-							  @RequestBody Menu menu,
-							  @CookieValue(name = "_gid", defaultValue = "_gid") String accessToken) {
-		return menuService.updateMenu(vendorId, menuId, menu, accessToken);
 	}
 
 	@PutMapping("/{menuId}/menu-items/{menuItemId}")
@@ -78,14 +88,6 @@ public class MenuController {
 		return menuService.updateMenuItem(vendorId, menuId, menuItemId, menuItem, accessToken);
 	}
 
-	@DeleteMapping("/{menuId}")
-	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void deleteMenu(@PathVariable(name = "vendorId") Long vendorId,
-						   @PathVariable(name = "menuId") Long menuId,
-						   @CookieValue(name = "_gid", defaultValue = "_gid") String accessToken) {
-		menuService.deleteMenu(vendorId, menuId, accessToken);
-	}
-
 	@DeleteMapping("/{menuId}/menu-items/{menuItemId}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void deleteMenuItem(@PathVariable(name = "vendorId") Long vendorId,
@@ -94,5 +96,10 @@ public class MenuController {
 							   @CookieValue(name = "_gid", defaultValue = "_gid") String accessToken) {
 		menuService.deleteMenuItem(vendorId, menuId, menuItemId, accessToken);
 	}
-	
+
+	@GetMapping("/menu-items/top-sellers")
+	public List<MenuItemDto> getTopSellers(@PathVariable(name = "vendorId") Long vendorId,
+										   @CookieValue(name = "_gid", defaultValue = "_gid") String accessToken) {
+		return menuService.getTopSellingItems(vendorId, accessToken);
+	}
 }
