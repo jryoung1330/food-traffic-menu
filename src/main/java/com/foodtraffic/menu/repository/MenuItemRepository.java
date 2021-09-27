@@ -10,8 +10,6 @@ import java.util.List;
 @Repository
 public interface MenuItemRepository extends JpaRepository<MenuItem, Long> {
 
-    MenuItem getById(Long menuItemId);
-
     boolean existsByIdAndMenuId(Long id, Long menuId);
 
     @Query(value = "select * from MENU_ITEM mi" +
