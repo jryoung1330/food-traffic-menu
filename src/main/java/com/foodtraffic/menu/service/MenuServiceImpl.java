@@ -20,6 +20,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class MenuServiceImpl implements MenuService {
@@ -58,6 +59,7 @@ public class MenuServiceImpl implements MenuService {
 	public MenuDto updateMenu(final long vendorId, final long menuId, Menu menu, final String accessToken) {
 		validateRequest(menuRepo.existsByIdAndVendorId(menuId, vendorId), vendorId, accessToken);
 
+		menu = (Menu) AppUtil.mergeObject(menuRepo, menu, menuId);
 		menu.setId(menuId);
 		menu.setVendorId(vendorId);
 		menu = menuRepo.save(menu);
@@ -85,7 +87,7 @@ public class MenuServiceImpl implements MenuService {
 									  final String accessToken) {
 		validateRequest(menuItemRepo.existsByIdAndMenuId(menuItemId, menuId), vendorId, accessToken);
 
-		menuItem = mergeMenuItem(menuItem, menuItemId);
+		menuItem = (MenuItem) AppUtil.mergeObject(menuItemRepo, menuItem, menuItemId);
 		menuItem.setMenuId(menuId);
 		menuItem.setId(menuItemId);
 		menuItem = menuItemRepo.save(menuItem);
@@ -117,23 +119,6 @@ public class MenuServiceImpl implements MenuService {
 		UserDto user = AppUtil.getUser(userClient, accessToken);
 		EmployeeDto emp = user.getEmployee();
 		return emp != null && emp.getVendorId() == vendorId && emp.isAdmin();
-	}
-	
-	private MenuItem mergeMenuItem(MenuItem updatedItem, Long menuItemId) {
-		MenuItem mergedItem = menuItemRepo.getById(menuItemId);
-		
-		try {
-			for (Field f : updatedItem.getClass().getDeclaredFields()) {
-				f.setAccessible(true);
-				if(f.get(updatedItem) != null) {
-					f.set(mergedItem, f.get(updatedItem));
-				}
-			}
-		} catch (IllegalAccessException e) {
-			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-		
-		return mergedItem;
 	}
 
 	private void validateRequest(boolean resourcesExist, long vendorId, String accessToken) {
