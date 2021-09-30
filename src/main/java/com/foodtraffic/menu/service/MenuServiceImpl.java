@@ -17,10 +17,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class MenuServiceImpl implements MenuService {
@@ -39,7 +37,7 @@ public class MenuServiceImpl implements MenuService {
 
 	@Override
 	public List<MenuDto> getAllMenusByVendor(final long vendorId) {
-		List<Menu> menus = menuRepo.findAllByVendorId(vendorId);
+		List<Menu> menus = menuRepo.findAllByVendorIdOrderByDisplayOrder(vendorId);
 		return modelMapper.map(menus, new TypeToken<List<MenuDto>>(){}.getType());
 	}
 

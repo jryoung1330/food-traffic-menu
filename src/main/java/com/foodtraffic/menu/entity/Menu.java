@@ -24,6 +24,9 @@ public class Menu {
 	@Column(name = "DESCRIPTION")
 	private String description;
 
+	@Column(name = "DISPLAY_ORDER")
+	private Integer displayOrder;
+
 	@OneToMany(cascade = CascadeType.REMOVE)
 	@JoinColumn(name = "MENUID", updatable=false)
 	private List<MenuItem> menuItems;
