@@ -52,7 +52,7 @@ public class MenuServiceImpl implements MenuService {
 		menu = menuRepo.save(menu);
 		return modelMapper.map(menu, MenuDto.class);
 	}
-	
+
 	@Override
 	public MenuDto updateMenu(final long vendorId, final long menuId, Menu menu, final String accessToken) {
 		validateRequest(menuRepo.existsByIdAndVendorId(menuId, vendorId), vendorId, accessToken);
@@ -67,6 +67,7 @@ public class MenuServiceImpl implements MenuService {
 	@Override
 	public void deleteMenu(final long vendorId, final long menuId, final String accessToken) {
 		validateRequest(menuRepo.existsByIdAndVendorId(menuId, vendorId), vendorId, accessToken);
+		updateDisplayOrder(vendorId, menuRepo.getOne(menuId));
 		menuRepo.deleteById(menuId);
 	}
 
@@ -124,6 +125,17 @@ public class MenuServiceImpl implements MenuService {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Resource does not exist");
 		} else if (!isAdmin(vendorId, accessToken)) {
 			throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Insufficient privileges");
+		}
+	}
+
+	private void updateDisplayOrder(long vendorId, Menu menu) {
+		List<Menu> menus = menuRepo.findAllByVendorIdOrderByDisplayOrder(vendorId);
+		menus.remove((int) menu.getDisplayOrder());
+
+		// renumber the menus
+		for(int i=menu.getDisplayOrder(); i<menus.size(); i++) {
+			menus.get(i).setDisplayOrder(i);
+			menuRepo.save(menus.get(i));
 		}
 	}
 
