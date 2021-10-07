@@ -10,4 +10,8 @@ public interface MenuRepository extends JpaRepository<Menu, Long> {
     boolean existsByIdAndVendorId(Long id, Long vendorId);
 
     List<Menu> findAllByVendorIdOrderByDisplayOrder(Long vendorId);
+
+    boolean existsByVendorIdAndName(Long vendorId, String name);
+
+    int countAllByVendorId(Long vendorId);
 }

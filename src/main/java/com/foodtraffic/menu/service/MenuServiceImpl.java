@@ -10,6 +10,7 @@ import com.foodtraffic.model.dto.MenuDto;
 import com.foodtraffic.model.dto.MenuItemDto;
 import com.foodtraffic.model.dto.UserDto;
 import com.foodtraffic.util.AppUtil;
+import org.apache.logging.log4j.util.Strings;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,6 +46,14 @@ public class MenuServiceImpl implements MenuService {
 	public MenuDto createMenu(final long vendorId, Menu menu, final String accessToken) {
 		if (!isAdmin(vendorId, accessToken)) {
 			throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Insufficient privileges");
+		}
+
+		if(Strings.isBlank(menu.getName())) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid request");
+		}
+
+		if(menu.getDisplayOrder() == null) {
+			menu.setDisplayOrder(menuRepo.countAllByVendorId(vendorId));
 		}
 
 		menu.setId(0L);
