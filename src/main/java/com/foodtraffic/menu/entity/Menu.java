@@ -4,6 +4,8 @@ import lombok.*;
 import org.hibernate.Hibernate;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 import java.util.List;
 import java.util.Objects;
 
@@ -23,9 +25,12 @@ public class Menu {
 	@Column(name = "VENDORID")
 	private Long vendorId;
 
+	@NotBlank(message = "Name is required")
+	@Size(max=25, message = "Name must not exceed 25 characters")
 	@Column(name = "NAME")
 	private String name;
 
+	@Size(max=150, message = "Description must not exceed 150 characters")
 	@Column(name = "DESCRIPTION")
 	private String description;
 

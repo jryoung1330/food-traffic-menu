@@ -75,16 +75,6 @@ public class MenuTest {
     }
 
     @Test
-    public void givenNameIsNull_whenCreateMenu_throw400Exception() {
-        Menu menu = mockMenu;
-        menu.setName(null);
-
-        when(userClient.checkAccessHeader(ACCESS_TOKEN)).thenReturn(mockUser);
-        ResponseStatusException rse = assertThrows(ResponseStatusException.class, () -> menuService.createMenu(123, menu, ACCESS_TOKEN));
-        assertEquals(rse.getStatus(), HttpStatus.BAD_REQUEST);
-    }
-
-    @Test
     public void givenNoDisplayOrder_whenCreateMenu_thenAddAtEnd() {
         Menu menu = mockMenu;
         menu.setDisplayOrder(null);
@@ -98,9 +88,9 @@ public class MenuTest {
 
     @Test
     public void givenValidRequest_whenCreateMenu_thenReturnMenuDto() {
-        when(userClient.checkAccessHeader("abcdefg123")).thenReturn(mockUser);
+        when(userClient.checkAccessHeader(ACCESS_TOKEN)).thenReturn(mockUser);
         when(menuRepo.save(mockMenu)).thenReturn(mockMenu);
-        MenuDto menuDto = menuService.createMenu(123, mockMenu, "abcdefg123");
+        MenuDto menuDto = menuService.createMenu(123, mockMenu, ACCESS_TOKEN);
         assertNotNull(menuDto);
     }
 
