@@ -56,21 +56,35 @@ public class MenuServiceImpl implements MenuService {
 	}
 
 	@Override
-	public MenuDto updateMenu(final long vendorId, final long menuId, Menu menu, final String accessToken) {
+	public MenuDto updateMenu(final long vendorId, final long menuId, @Valid Menu menu, final String accessToken) {
 		validateRequest(menuRepo.existsByIdAndVendorId(menuId, vendorId), vendorId, accessToken);
+
+		Integer displayOrder = menu.getDisplayOrder();
+		menu.setDisplayOrder(null);
 
 		menu = (Menu) AppUtil.mergeObject(menuRepo, menu, menuId);
 		menu.setId(menuId);
 		menu.setVendorId(vendorId);
 		menu = menuRepo.save(menu);
+
+		// display order changed
+		if(displayOrder != null && !displayOrder.equals(menu.getDisplayOrder())) {
+			List<Menu> renumberedMenus = updateDisplayOrder(menuId, vendorId, displayOrder);
+			menuRepo.saveAll(renumberedMenus);
+		}
+
 		return modelMapper.map(menu, MenuDto.class);
 	}
 
 	@Override
 	public void deleteMenu(final long vendorId, final long menuId, final String accessToken) {
 		validateRequest(menuRepo.existsByIdAndVendorId(menuId, vendorId), vendorId, accessToken);
-		updateDisplayOrder(vendorId, menuRepo.getOne(menuId));
 		menuRepo.deleteById(menuId);
+
+		// renumber the menus that are left
+		List<Menu> menus = menuRepo.findAllByVendorIdOrderByDisplayOrder(vendorId);
+		setDisplayOrders(menus);
+		menuRepo.saveAll(menus);
 	}
 
 	@Override
@@ -130,15 +144,29 @@ public class MenuServiceImpl implements MenuService {
 		}
 	}
 
-	private void updateDisplayOrder(long vendorId, Menu menu) {
+	public List<Menu> updateDisplayOrder(long id, long vendorId, int displayOrder) {
 		List<Menu> menus = menuRepo.findAllByVendorIdOrderByDisplayOrder(vendorId);
-		menus.remove((int) menu.getDisplayOrder());
 
-		// renumber the menus
-		for(int i=menu.getDisplayOrder(); i<menus.size(); i++) {
+		if(displayOrder != menus.size()-1 && menus.get(displayOrder).getId() != id && menus.get(displayOrder+1).getId() == id) {
+			swap(menus, displayOrder, displayOrder+1);
+		} else if(displayOrder != 0 && menus.get(displayOrder).getId() != id && menus.get(displayOrder-1).getId() == id) {
+			swap(menus, displayOrder, displayOrder-1);
+		}
+
+		setDisplayOrders(menus);
+
+		return menus;
+	}
+
+	private void setDisplayOrders(List<Menu> menus) {
+		for(int i=0; i<menus.size(); i++) {
 			menus.get(i).setDisplayOrder(i);
-			menuRepo.save(menus.get(i));
 		}
 	}
 
+	private void swap(List<Menu> menus, int i, int j) {
+		Menu temp = menus.get(j);
+		menus.set(j, menus.get(i));
+		menus.set(i, temp);
+	}
 }

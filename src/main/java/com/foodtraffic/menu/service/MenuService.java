@@ -14,7 +14,7 @@ public interface MenuService {
 
 	MenuDto createMenu(long vendorId, @Valid Menu menu, String accessToken);
 
-	MenuDto updateMenu(long vendorId, long menuId, Menu menu, String accessToken);
+	MenuDto updateMenu(long vendorId, long menuId, @Valid Menu menu, String accessToken);
 
 	void deleteMenu(long vendorId, long menuId, String accessToken);
 
