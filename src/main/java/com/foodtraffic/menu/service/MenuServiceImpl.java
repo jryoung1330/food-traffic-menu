@@ -88,7 +88,7 @@ public class MenuServiceImpl implements MenuService {
 	}
 
 	@Override
-	public MenuItemDto createMenuItem(final long vendorId, final long menuId, MenuItem menuItem, final String accessToken) {
+	public MenuItemDto createMenuItem(final long vendorId, final long menuId, @Valid MenuItem menuItem, final String accessToken) {
 		validateRequest(menuRepo.existsById(menuId), vendorId, accessToken);
 
 		menuItem.setId(0L);
@@ -98,7 +98,7 @@ public class MenuServiceImpl implements MenuService {
 	}
 
 	@Override
-	public MenuItemDto updateMenuItem(final long vendorId, final long menuId, final long menuItemId, MenuItem menuItem,
+	public MenuItemDto updateMenuItem(final long vendorId, final long menuId, final long menuItemId, @Valid MenuItem menuItem,
 									  final String accessToken) {
 		validateRequest(menuItemRepo.existsByIdAndMenuId(menuItemId, menuId), vendorId, accessToken);
 
