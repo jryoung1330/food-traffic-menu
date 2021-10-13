@@ -59,20 +59,12 @@ public class MenuServiceImpl implements MenuService {
 	public MenuDto updateMenu(final long vendorId, final long menuId, @Valid Menu menu, final String accessToken) {
 		validateRequest(menuRepo.existsByIdAndVendorId(menuId, vendorId), vendorId, accessToken);
 
-		Integer displayOrder = menu.getDisplayOrder();
-		menu.setDisplayOrder(null);
-
 		menu = (Menu) AppUtil.mergeObject(menuRepo, menu, menuId);
 		menu.setId(menuId);
 		menu.setVendorId(vendorId);
 		menu = menuRepo.save(menu);
 
-		// display order changed
-		if(displayOrder != null && !displayOrder.equals(menu.getDisplayOrder())) {
-			List<Menu> renumberedMenus = updateDisplayOrder(menuId, vendorId, displayOrder);
-			menuRepo.saveAll(renumberedMenus);
-		}
-
+		menuRepo.saveAll(updateDisplayOrder(menuId, vendorId, menu.getDisplayOrder()));
 		return modelMapper.map(menu, MenuDto.class);
 	}
 

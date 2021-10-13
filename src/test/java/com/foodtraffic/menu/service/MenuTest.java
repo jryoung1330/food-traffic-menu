@@ -11,7 +11,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
 import org.modelmapper.ModelMapper;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -52,7 +51,6 @@ public class MenuTest {
 
     @BeforeEach
     public void setup() {
-        MockitoAnnotations.initMocks(this);
         mockMenu = mockMenu();
         mockUser = mockUser();
     }

@@ -35,7 +35,6 @@ public class Menu {
 	@Column(name = "DESCRIPTION")
 	private String description;
 
-	@NotNull
 	@Column(name = "DISPLAY_ORDER")
 	private Integer displayOrder;
 
