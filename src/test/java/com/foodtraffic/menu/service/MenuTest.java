@@ -9,13 +9,13 @@ import com.foodtraffic.model.dto.MenuDto;
 import com.foodtraffic.model.dto.UserDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
@@ -24,8 +24,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
-@SpringBootTest
-@ActiveProfiles("local")
+@ExtendWith(MockitoExtension.class)
 public class MenuTest {
 
     @Mock
@@ -47,7 +46,7 @@ public class MenuTest {
 
     private UserDto mockUser;
 
-    private static final String ACCESS_TOKEN = "abcdefg123";
+    private static final String ACCESS_TOKEN = "test";
 
     @BeforeEach
     public void setup() {

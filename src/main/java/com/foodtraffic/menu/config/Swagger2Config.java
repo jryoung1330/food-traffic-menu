@@ -1,4 +1,4 @@
-package com.foodtraffic.menu.swaggerconfig;
+package com.foodtraffic.menu.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
