@@ -2,7 +2,6 @@ package com.foodtraffic.menu.service;
 
 import com.foodtraffic.client.UserClient;
 import com.foodtraffic.menu.entity.Menu;
-import com.foodtraffic.menu.repository.MenuItemRepository;
 import com.foodtraffic.menu.repository.MenuRepository;
 import com.foodtraffic.model.dto.EmployeeDto;
 import com.foodtraffic.model.dto.MenuDto;
@@ -20,18 +19,17 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class MenuTest {
+public class MenuServiceTest {
 
     @Mock
     MenuRepository menuRepo;
-
-    @Mock
-    MenuItemRepository menuItemRepo;
 
     @Mock
     UserClient userClient;
@@ -182,8 +180,71 @@ public class MenuTest {
         assertEquals("Desserts", updatedMenus.get(2).getName());
     }
 
+    @Test
+    public void givenValidRequest_whenUpdateMenu_thenReturnUpdatedMenu() {
+        Menu updatedMenu = mockMenu();
+        updatedMenu.setName("Changed");
+        when(menuRepo.existsByIdAndVendorId(1L, 123L)).thenReturn(true);
+        when(userClient.checkAccessHeader(ACCESS_TOKEN)).thenReturn(mockUser);
+        when(menuRepo.findAllByVendorIdOrderByDisplayOrder(123L)).thenReturn(List.of(mockMenu));
+        when(menuRepo.findById(1L)).thenReturn(Optional.of(mockMenu));
+        when(menuRepo.save(any())).thenReturn(updatedMenu);
+        when(menuRepo.saveAll(any())).thenReturn(new ArrayList<>());
+        MenuDto menu = menuService.updateMenu(123L, 1L, updatedMenu, ACCESS_TOKEN);
+        assertEquals(updatedMenu.getName(), menu.getName());
+    }
+
+    @Test
+    public void givenNotAdmin_whenUpdateMenu_thenThrowException() {
+        UserDto user = mockUser;
+        user.getEmployee().setAdmin(false);
+        when(menuRepo.existsByIdAndVendorId(1L, 123L)).thenReturn(true);
+        when(userClient.checkAccessHeader(ACCESS_TOKEN)).thenReturn(user);
+        ResponseStatusException rse = assertThrows(ResponseStatusException.class,
+                () -> menuService.deleteMenu(123L, 1L, ACCESS_TOKEN));
+        assertEquals(rse.getStatus(), HttpStatus.FORBIDDEN);
+    }
+
+    @Test
+    public void givenMenuDoesNotExist_whenUpdateMenu_thenThrowException() {
+        when(menuRepo.existsByIdAndVendorId(1L, 123L)).thenReturn(false);
+        ResponseStatusException rse = assertThrows(ResponseStatusException.class,
+                () -> menuService.deleteMenu(123L, 1L, ACCESS_TOKEN));
+        assertEquals(rse.getStatus(), HttpStatus.NOT_FOUND);
+    }
+
+    @Test
+    public void givenValidRequest_whenDeleteMenu_thenCallDelete() {
+        when(menuRepo.existsByIdAndVendorId(1L, 123L)).thenReturn(true);
+        when(userClient.checkAccessHeader(ACCESS_TOKEN)).thenReturn(mockUser);
+        when(menuRepo.findAllByVendorIdOrderByDisplayOrder(123L)).thenReturn(new ArrayList<>());
+        when(menuRepo.saveAll(any())).thenReturn(new ArrayList<>());
+        menuService.deleteMenu(123L, 1L, ACCESS_TOKEN);
+        verify(menuRepo, times(1)).deleteById(1L);
+    }
+
+    @Test
+    public void givenNotAdmin_whenDeleteMenu_thenThrowException() {
+        UserDto user = mockUser;
+        user.getEmployee().setAdmin(false);
+        when(menuRepo.existsByIdAndVendorId(1L, 123L)).thenReturn(true);
+        when(userClient.checkAccessHeader(ACCESS_TOKEN)).thenReturn(user);
+        ResponseStatusException rse = assertThrows(ResponseStatusException.class,
+                () -> menuService.deleteMenu(123L, 1L, ACCESS_TOKEN));
+        assertEquals(rse.getStatus(), HttpStatus.FORBIDDEN);
+    }
+
+    @Test
+    public void givenMenuDoesNotExist_whenDeleteMenu_thenThrowException() {
+        when(menuRepo.existsByIdAndVendorId(1L, 123L)).thenReturn(false);
+        ResponseStatusException rse = assertThrows(ResponseStatusException.class,
+                () -> menuService.deleteMenu(123L, 1L, ACCESS_TOKEN));
+        assertEquals(rse.getStatus(), HttpStatus.NOT_FOUND);
+    }
+
     private Menu mockMenu() {
         Menu menu = new Menu();
+        menu.setId(1L);
         menu.setName("Test Menu");
         menu.setVendorId(123L);
         menu.setDisplayOrder(0);
